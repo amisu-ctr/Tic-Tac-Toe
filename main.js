@@ -107,6 +107,10 @@ function checkForWin(board) {
     return false
 }
 
+function checkForTie(board) {
+    return board.every(cell => cell !== "")
+}
+
 
 const restartButton = document.querySelector("#restart-button")
 restartButton.addEventListener('click', () => {
