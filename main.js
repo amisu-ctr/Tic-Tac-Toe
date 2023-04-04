@@ -1,8 +1,17 @@
+const displayController= (() => {
+    const renderMessage = (message) => {
+        document.querySelector("#message").innerHTML = message;
+    }
+
+    return {renderMessage}
+})()
+
+
+
 const Gameboard = (() => {
     let gameboard = ['','','','','','','','','']
 
-
-    //set variable to an empty . loop through gameboard array . upon each iteration create a string and attach it to the boardHtml variable
+   //set variable to an empty . loop through gameboard array . upon each iteration create a string and attach it to the boardHtml variable
     //after the loop is done . grab the gameboard element  div from the html and set its value to the boardHtml 
     //this will populate it child divs with based on the number of items in the gameboard array 
     const render = () => {
@@ -57,16 +66,19 @@ const Game = (() => {
     }
 
     const handleClick = (event) => {
+        if(gameOver) {  //game over is true return . meaning dont continue
+            return;
+        }
        //selects the id value of the clicked element splits it into an array at point where it finds dash 
        // The items in the array are strings so it converts the selected index into an inter value 
         let index = parseInt(event.target.id.split('-')[1])
 
         if(checkForWin(Gameboard.getGameboard(), players[currentPlayerIndex].mark)) {
             gameOver = true;
-            alert(`${players[currentPlayerIndex].name} won`)
+            displayController.renderMessage(`${players[currentPlayerIndex].name} wins`)
         } else if (checkForTie(Gameboard.getGameboard())) {
             gameOver = true;
-            alert("its a tie!")
+            displayController.renderMessage("It's tie");
         }
 
         if(Gameboard.getGameboard()[index] !== '')
@@ -81,6 +93,7 @@ const Game = (() => {
         for(let i = 0; i < 9; i++) {
             Gameboard.update(i, '')
         }
+        gameOver = false
         Gameboard.render()
     }
     
