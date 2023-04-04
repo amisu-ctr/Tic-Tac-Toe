@@ -11,12 +11,7 @@ const Gameboard = (() => {
         gameboard.forEach((square, index) => {  
             boardHTML += `<div class="square" id="square-${index}">${square} </div>`
         })
-        document.querySelector("#gameboard").innerHTML = boardHTML; 
-        const squares = document.querySelectorAll(".square") //select all created div element with class square
-        squares.forEach((square) => {
-            square.addEventListener('click', Game.handleClick)
-        })
-        
+        document.querySelector("#gameboard").innerHTML = boardHTML;         
     }
 
     return {
@@ -45,8 +40,22 @@ const Game = (() => {
         currentPlayerIndex = 0;
         gameOver = false;
         Gameboard.render();
+        const squares = document.querySelectorAll(".square") //select all created div element with class square
+        squares.forEach((square) => {
+            square.addEventListener('click', Game.handleClick)
+        })
     }
-    return {start}
+
+    const handleClick = (event) => {
+        //targets the value of the DOM elements id , splits it into array  at the
+        //point where it finds a dash . e.g lets say the value of the id is come-btn it
+        // will return an array like this ['come', btn]. in this case out id values are square-1 square-2 etc
+        //so it splits it into an array and returns the item at index 1 which is the second item .
+        let index = event.target.id.split('-')[1]
+        alert(index)
+    }
+    
+    return {start, handleClick}
 })()
 
 
