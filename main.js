@@ -11,11 +11,25 @@ const Gameboard = (() => {
         gameboard.forEach((square, index) => {  
             boardHTML += `<div class="square" id="square-${index}">${square} </div>`
         })
-        document.querySelector("#gameboard").innerHTML = boardHTML;         
+        document.querySelector("#gameboard").innerHTML = boardHTML;   
+        const squares = document.querySelectorAll(".square") //select all created div element with class square
+        squares.forEach((square) => {
+            square.addEventListener('click', Game.handleClick)
+        })      
     }
 
+    const update = (index, value) => {
+        gameboard[index] = value; // this method just uses the index(in this case the id of the clicked square/div) of the gamebaord  array and assign it a 
+        //value in this case X or 0 . then calls the render method again which loops through it create div squares assing the value as the text-content 
+        render()
+    } 
+
+    const getGameboard = () => gameboard;
+
     return {
-        render
+        render,
+        update,
+        getGameboard
     }
 })()
 
@@ -40,24 +54,35 @@ const Game = (() => {
         currentPlayerIndex = 0;
         gameOver = false;
         Gameboard.render();
-        const squares = document.querySelectorAll(".square") //select all created div element with class square
-        squares.forEach((square) => {
-            square.addEventListener('click', Game.handleClick)
-        })
     }
 
     const handleClick = (event) => {
-        //targets the value of the DOM elements id , splits it into array  at the
-        //point where it finds a dash . e.g lets say the value of the id is come-btn it
-        // will return an array like this ['come', btn]. in this case out id values are square-1 square-2 etc
-        //so it splits it into an array and returns the item at index 1 which is the second item .
-        let index = event.target.id.split('-')[1]
-        alert(index)
+       //selects the id value of the clicked element splits it into an array at point where it finds dash 
+       // The items in the array are strings so it converts the selected index into an inter value 
+        let index = parseInt(event.target.id.split('-')[1])
+
+        if(Gameboard.getGameboard()[index] !== '')
+        return; //this prevents from updating a particular squares mark which is x or y it checks whether you've already inserted something in this case clicked . if its already clicked and updated with x or y 
+        // it simply breaks and the Gameboard.update method doesnt trigger on the next line
+
+        Gameboard.update(index, players[currentPlayerIndex].mark)  
+        currentPlayerIndex = currentPlayerIndex === 0 ? 1 : 0
+    }
+
+    const restart = () => {
+        for(let i = 0; i < 9; i++) {
+            Gameboard.update(i, '')
+        }
+        Gameboard.render()
     }
     
-    return {start, handleClick}
+    return {start,restart, handleClick}
 })()
 
+const restartButton = document.querySelector("#restart-button")
+restartButton.addEventListener('click', () => {
+    Game.restart();
+})
 
 const startButton = document.querySelector("#start-button");
 startButton.addEventListener("click", () => {
